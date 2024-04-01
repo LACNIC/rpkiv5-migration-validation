@@ -8,10 +8,12 @@ docker_container="fort_rpkiv5"
 docker_image="nicmx/fort-validator:latest"
 # docker_image="nicmx/fort-validator:1.5.3"
 # docker_image="nicmx/fort-validator:1.6.0"
-docker_options="--dns 172.17.0.2 -p:3324:3323 -p 8324:8323"
+# docker_options="--dns 172.17.0.2 -p:3324:3323 -p 8324:8323"
+docker_options="-p:3324:3323 -p 8324:8323"
 rpkiv5_host="96.126.99.186"
 #
-cli_parameters="--server.interval.validation 120 --rsync.enabled=false --tal=/etc/tals/lacnic.tal --output.roa=/root/lacnic_vrps.csv --local-repository=/root/cache --log.output console --log.level=debug --validation-log.enabled=true"
+# cli_parameters="--server.interval.validation 120 --rsync.enabled=false --tal=/etc/tals/lacnic.tal --output.roa=/root/lacnic_vrps.csv --local-repository=/root/cache --log.output console --log.level=debug --validation-log.enabled=true"
+cli_parameters="--server.interval.validation 120 --rsync.enabled=true --http.enabled=false --tal=/etc/tals/lacnic.tal --output.roa=/root/lacnic_vrps.csv --local-repository=/root/cache --log.output console --log.level=debug --validation-log.enabled=true"
 
 # prune volume
 function prune() {
@@ -46,6 +48,7 @@ function rpkiv5() {
         	-v $docker_volume:/root/cache \
         	-v $(pwd)/tals:/etc/tals \
 		--add-host rrdp.lacnic.net:$rpkiv5_host \
+		--add-host repository.lacnic.net:$rpkiv5_host \
 		$docker_options \
         	--name $docker_container \
 		$docker_image $cli_parameters
